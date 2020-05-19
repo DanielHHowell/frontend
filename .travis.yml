@@ -2,11 +2,27 @@ language: generic
 sudo: required
 services:
   - docker
-  
+
 
 before_install:
   - docker build -t danielhhowell/frontend -f Dockerfile.dev .
-  
+
 script:
-  - docker run -e CI=true danielhhowell/frontend npm run test
+  - docker run -e CI=true danielhhowell/frontend npm run test -- --coverage
+
+deploy:
+  provider: elasticbeanstalk
+  region: "us-west-2"
+  app: "docker-react"
+  env: "DockerReact-env"
+  bucket_name: "elasticbeanstalk-us-west-2-786263122430"
+  path: "docker-react"
+  on: 
+    branch: master
+
+
+access_key_id: $AWS_ACCESS_KEY
+secret_access_key: $AWS_SECRET_KEY
+
+
 
